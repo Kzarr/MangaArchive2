@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Leitor de Capítulo</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .page {
+      display: block;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="chapter-title">Carregando capítulo...</h1>
+  <div id="manga-pages"></div>
+
+  <script>
+    const pathParts = window.location.pathname.split('/');
+    const slug = pathParts[2];
+    const chapter = pathParts[3];
+
+    fetch(`/api/manga/${slug}/${chapter}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("chapter-title").textContent = `${data.mangaTitle} — ${data.chapterTitle}`;
+
+        const container = document.getElementById("manga-pages");
+        for (let i = 1; i <= data.pages; i++) {
+          const img = document.createElement("img");
+          const pageNum = String(i).padStart(3, '0'); // 001, 002...
+          img.src = `/mangas/${data.folder}/${pageNum}.jpg`;
+          img.alt = `Página ${i}`;
+          img.className = "page";
+          container.appendChild(img);
+        }
+      })
+      .catch(err => {
+        document.getElementById("chapter-title").textContent = "Erro ao carregar capítulo.";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
