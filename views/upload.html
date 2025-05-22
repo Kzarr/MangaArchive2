@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Upload de Mangá</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css">
   <style>
     body {
       background: #f4f4f4;
       font-family: sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
     .container {
@@ -16,6 +19,17 @@
       padding: 20px;
       background: white;
       border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    form label {
+      font-weight: bold;
+      margin-top: 10px;
     }
 
     input, textarea, select {
@@ -23,10 +37,8 @@
       width: 100%;
       margin-bottom: 15px;
       padding: 10px;
-    }
-
-    label {
-      font-weight: bold;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
     button {
@@ -36,6 +48,8 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      width: 100%;
+      font-size: 16px;
     }
 
     button:hover {
@@ -48,17 +62,17 @@
     <h1>Upload de Mangá</h1>
 
     <form id="uploadForm" action="/admin/upload" method="POST" enctype="multipart/form-data">
-      <label for="mangaSlug">Slug do mangá (ex: one-piece):</label>
-      <input type="text" name="slug" required>
+      <label for="slug">Slug do mangá (ex: naruto, one-piece):</label>
+      <input type="text" id="slug" name="slug" required>
 
       <label for="chapter">Número do capítulo:</label>
-      <input type="number" name="chapter" required>
+      <input type="number" id="chapter" name="chapter" required>
 
       <label for="title">Título do capítulo (opcional):</label>
-      <input type="text" name="title">
+      <input type="text" id="title" name="title">
 
       <label for="pages">Imagens das páginas (.jpg):</label>
-      <input type="file" name="pages" multiple accept="image/jpeg" required>
+      <input type="file" id="pages" name="pages[]" multiple accept="image/jpeg" required>
 
       <button type="submit">Enviar</button>
     </form>

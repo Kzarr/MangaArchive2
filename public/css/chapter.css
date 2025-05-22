@@ -1,0 +1,23 @@
+body {
+  background: #111;
+  color: #fff;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+h1, h2 {
+  margin-top: 20px;
+}
+
+.page {
+  width: 90%;
+  max-width: 800px;
+  margin: 10px auto;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.page img {
+  width: 100%;
+  display: block;
+  border-radius: 4px;
+}
