@@ -5,6 +5,7 @@ const session = require('express-session');
 
 const mangaRoutes = require('./routes/mangaRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const uploadRoutes = require('./routes/uploadRoutes'); // 👈 Novo
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -16,7 +17,7 @@ app.use(session({
   saveUninitialized: false
 }));
 
-// 🔒 CSP personalizado
+// 🔒 Segurança
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -28,8 +29,12 @@ app.use(
   })
 );
 
-// 🗂️ Arquivos estáticos
+// 🗂️ Arquivos estáticos (inclui as imagens dos capítulos)
 app.use(express.static(path.join(__dirname, 'public')));
+
+// 🧠 Parse de corpo
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // 📁 JSONs públicos
 app.get('/chapters.json', (req, res) => {
@@ -41,9 +46,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// 📚 Rotas
+// 📚 Rotas principais
 app.use('/manga', mangaRoutes);
 app.use('/admin', adminRoutes);
+app.use(uploadRoutes); // 👈 Nova rota de upload
 
 // ❌ Erros
 app.use((err, req, res, next) => {

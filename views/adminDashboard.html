@@ -93,6 +93,7 @@
     async function carregarMangas() {
       listaMangas.innerHTML = '<li>Carregando mangás...</li>';
       resposta.textContent = '';
+      resposta.classList.remove('error');
       try {
         const res = await fetch('/admin/mangas', { credentials: 'include' });
         if (!res.ok) throw new Error(`Erro ${res.status}: ${res.statusText}`);
@@ -130,6 +131,7 @@
       try {
         botao.disabled = true;
         resposta.textContent = '';
+        resposta.classList.remove('error');
         const res = await fetch(`/admin/mangas/${id}`, {
           method: 'DELETE',
           credentials: 'include'
@@ -141,7 +143,6 @@
         }
 
         resposta.textContent = data.message || 'Mangá excluído com sucesso.';
-        resposta.classList.remove('error');
         await carregarMangas();
       } catch (error) {
         resposta.textContent = `Falha ao excluir mangá: ${error.message}`;
@@ -182,7 +183,6 @@
         }
 
         resposta.textContent = data.message || 'Capítulo excluído com sucesso.';
-        resposta.classList.remove('error');
         input.value = '';
       } catch (error) {
         resposta.textContent = `Falha ao excluir capítulo: ${error.message}`;

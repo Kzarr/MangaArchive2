@@ -7,7 +7,43 @@ const { generateId } = require('../utils/idUtils');
 const router = express.Router();
 router.use(express.json());
 
-// ✅ Rota: lista de mangás
+// ✅ Rota: lista de mangás (para painel admin)
+router.get('/admin/mangas', (req, res) => {
+  try {
+    const mangas = readJson('mangas.json');
+    res.json(mangas);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao carregar lista de mangás' });
+  }
+});
+
+// ✅ Rota: excluir mangá por ID
+router.delete('/admin/mangas/:id', (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    let mangas = readJson('mangas.json');
+    const mangaIndex = mangas.findIndex(m => m.id === id);
+
+    if (mangaIndex === -1) {
+      return res.status(404).json({ error: 'Mangá não encontrado' });
+    }
+
+    mangas.splice(mangaIndex, 1);
+    writeJson('mangas.json', mangas);
+
+    res.json({ message: 'Mangá excluído com sucesso.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao excluir mangá' });
+  }
+});
+
+// ✅ Rota: lista de mangás (API pública)
 router.get('/api/mangas', (req, res) => {
   try {
     const mangas = readJson('mangas.json');
@@ -37,7 +73,6 @@ router.get('/api/:slug/:chapter', (req, res) => {
     const chap = chapters.find(c => c.mangaId === manga.id && c.number === parseInt(chapter));
     if (!chap) return res.status(404).json({ error: 'Capítulo não encontrado' });
 
-    // 👇 Aqui é a correção chave: caminho real da pasta de imagens
     const folder = `${slug}/cap-${chapter}`;
 
     res.json({

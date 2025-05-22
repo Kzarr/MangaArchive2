@@ -1,54 +1,9 @@
 [
-  {
-    "mangaId": 1,
-    "number": 1,
-    "title": "O Começo",
-    "pageCount": 5
-  },
-  {
-    "mangaId": 2,
-    "number": 1,
-    "title": "O Shinigami",
-    "pageCount": 10
-  },
-  {
-    "mangaId": 1,
-    "number": 2,
-    "title": "Kyuubi",
-    "pageCount": 1
-  },
-  {
-    "mangaId": 2,
-    "number": 2,
-    "title": "Ichigo",
-    "pageCount": 1
-  },
-  {
-    "id": 1,
-    "mangaId": 1,
-    "number": 3,
-    "title": "Retorno de Naruto",
-    "pageCount": 1
-  },
-  {
-    "id": 2,
-    "mangaId": 1,
-    "number": 3,
-    "title": "Retorno de Naruto",
-    "pageCount": 1
-  },
-  {
-    "id": 3,
-    "mangaId": 2,
-    "number": 3,
-    "title": "Sociedade das Almas",
-    "pageCount": 1
-  },
-  {
-    "id": 4,
-    "mangaId": 2,
-    "number": 4,
-    "title": "Sociedade",
-    "pageCount": 1
-  }
+  { "id": 1, "mangaId": 1, "number": 1, "title": "O Começo", "pageCount": 5 },
+  { "id": 2, "mangaId": 2, "number": 1, "title": "O Shinigami", "pageCount": 10 },
+  { "id": 3, "mangaId": 1, "number": 2, "title": "Kyuubi", "pageCount": 1 },
+  { "id": 4, "mangaId": 2, "number": 2, "title": "Ichigo", "pageCount": 1 },
+  { "id": 5, "mangaId": 1, "number": 3, "title": "Retorno de Naruto", "pageCount": 1 },
+  { "id": 6, "mangaId": 2, "number": 3, "title": "Sociedade das Almas", "pageCount": 1 },
+  { "id": 7, "mangaId": 2, "number": 4, "title": "Sociedade", "pageCount": 1 }
 ]
