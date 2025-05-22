@@ -1,3 +1,14 @@
 [
-  { "id": 1, "slug": "naruto", "title": "Naruto", "description": "Um ninja busca ser Hokage" }
+  {
+    "id": 1,
+    "slug": "naruto",
+    "title": "Naruto",
+    "description": "Um ninja busca ser Hokage"
+  },
+  {
+    "id": 2,
+    "title": "Bleach",
+    "slug": "bleach",
+    "description": "Ceifeiros de almas"
+  }
 ]

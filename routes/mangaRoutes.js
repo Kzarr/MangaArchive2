@@ -1,12 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const { getMangaChapterData } = require('../controllers/mangaController');
 const path = require('path');
+const { getMangaChapterData } = require('../controllers/mangaController');
+const { readJson, writeJson } = require('../utils/fileUtils');
+const { generateId } = require('../utils/idUtils');
 
+router.use(express.json()); // para aceitar JSON no corpo da requisição
+
+// Rota de visualização da leitura do capítulo
 router.get('/manga/:slug/:chapter', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'views', 'chapter.html'));
 });
 
+// Rota de dados do capítulo em JSON
 router.get('/api/manga/:slug/:chapter', (req, res) => {
   const { slug, chapter } = req.params;
   const data = getMangaChapterData(slug, chapter);
@@ -15,13 +21,7 @@ router.get('/api/manga/:slug/:chapter', (req, res) => {
   res.json(data);
 });
 
-module.exports = router;
-
-const { readJson, writeJson } = require('../utils/fileUtils');
-const { generateId } = require('../utils/idUtils');
-
-router.use(express.json()); // para aceitar JSON no corpo da requisição
-
+// Rota para adicionar um novo mangá
 router.post('/api/manga', (req, res) => {
   const { title, description, slug } = req.body;
 
@@ -48,6 +48,7 @@ router.post('/api/manga', (req, res) => {
   res.status(201).json(newManga);
 });
 
+// Rota para adicionar um novo capítulo
 router.post('/api/manga/:slug/chapter', (req, res) => {
   const { number, title, pageCount } = req.body;
   const slug = req.params.slug;
@@ -79,3 +80,25 @@ router.post('/api/manga/:slug/chapter', (req, res) => {
   if (!success) return res.status(500).json({ error: 'Erro ao salvar capítulo' });
   res.status(201).json(newChapter);
 });
+
+// Rota para listar todos os mangás
+router.get('/api/mangas', (req, res) => {
+  const mangas = readJson('mangas.json');
+  res.json(mangas);
+});
+
+// Rota para listar capítulos de um mangá
+router.get('/api/manga/:slug/chapters', (req, res) => {
+  const mangas = readJson('mangas.json');
+  const chapters = readJson('chapters.json');
+  const { slug } = req.params;
+
+  const manga = mangas.find(m => m.slug === slug);
+  if (!manga) return res.status(404).json({ error: 'Mangá não encontrado' });
+
+  const mangaChapters = chapters.filter(c => c.mangaId === manga.id);
+  res.json(mangaChapters);
+});
+
+// ✅ Exportação correta no final
+module.exports = router;
