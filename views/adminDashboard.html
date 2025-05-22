@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel Administrativo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #fff;
+      margin-bottom: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+    }
+    button {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease;
+    }
+    button:hover:not(:disabled) {
+      background-color: #c0392b;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    input[type="number"] {
+      padding: 0.4rem 0.6rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 100px;
+      margin-right: 0.5rem;
+    }
+    #resposta {
+      margin-top: 1rem;
+      font-weight: 600;
+      min-height: 1.2em;
+      color: #27ae60;
+    }
+    #resposta.error {
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Administração de Mangás</h1>
+
+    <section aria-label="Lista de mangás cadastrados">
+      <h2>Lista de Mangás</h2>
+      <ul id="listaMangas" aria-live="polite" aria-relevant="additions removals">
+        <li>Carregando mangás...</li>
+      </ul>
+    </section>
+
+    <section aria-label="Excluir capítulo">
+      <h2>Excluir Capítulo</h2>
+      <input type="number" id="capituloId" placeholder="ID do Capítulo" aria-label="ID do Capítulo" min="1" />
+      <button id="btnExcluirCapitulo">Excluir Capítulo</button>
+    </section>
+
+    <p id="resposta" role="alert" aria-live="assertive"></p>
+  </main>
+
+  <script>
+    const listaMangas = document.getElementById('listaMangas');
+    const resposta = document.getElementById('resposta');
+    const btnExcluirCapitulo = document.getElementById('btnExcluirCapitulo');
+
+    async function carregarMangas() {
+      listaMangas.innerHTML = '<li>Carregando mangás...</li>';
+      resposta.textContent = '';
+      try {
+        const res = await fetch('/admin/mangas', { credentials: 'include' });
+        if (!res.ok) throw new Error(`Erro ${res.status}: ${res.statusText}`);
+        const mangas = await res.json();
+
+        if (!Array.isArray(mangas) || mangas.length === 0) {
+          listaMangas.innerHTML = '<li>Nenhum mangá cadastrado.</li>';
+          return;
+        }
+
+        listaMangas.innerHTML = '';
+        mangas.forEach(manga => {
+          const li = document.createElement('li');
+          const titulo = manga.nome || manga.titulo || 'Sem título';
+          li.textContent = `ID: ${manga.id} - ${titulo}`;
+
+          const btnExcluir = document.createElement('button');
+          btnExcluir.textContent = 'Excluir';
+          btnExcluir.setAttribute('aria-label', `Excluir mangá ${titulo}`);
+          btnExcluir.addEventListener('click', () => excluirManga(manga.id, btnExcluir));
+          li.appendChild(btnExcluir);
+
+          listaMangas.appendChild(li);
+        });
+      } catch (error) {
+        listaMangas.innerHTML = '<li>Erro ao carregar mangás.</li>';
+        resposta.textContent = error.message;
+        resposta.classList.add('error');
+      }
+    }
+
+    async function excluirManga(id, botao) {
+      if (!confirm(`Tem certeza que deseja excluir o mangá ID ${id}?`)) return;
+
+      try {
+        botao.disabled = true;
+        resposta.textContent = '';
+        const res = await fetch(`/admin/mangas/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Erro desconhecido');
+        }
+
+        resposta.textContent = data.message || 'Mangá excluído com sucesso.';
+        resposta.classList.remove('error');
+        await carregarMangas();
+      } catch (error) {
+        resposta.textContent = `Falha ao excluir mangá: ${error.message}`;
+        resposta.classList.add('error');
+      } finally {
+        botao.disabled = false;
+      }
+    }
+
+    async function excluirCapitulo() {
+      const input = document.getElementById('capituloId');
+      const id = input.value.trim();
+      resposta.textContent = '';
+      resposta.classList.remove('error');
+
+      if (!id) {
+        resposta.textContent = 'Informe o ID do capítulo para excluir.';
+        resposta.classList.add('error');
+        return;
+      }
+
+      if (isNaN(id) || id <= 0) {
+        resposta.textContent = 'ID do capítulo inválido.';
+        resposta.classList.add('error');
+        return;
+      }
+
+      btnExcluirCapitulo.disabled = true;
+      try {
+        const res = await fetch(`/admin/chapters/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Erro desconhecido');
+        }
+
+        resposta.textContent = data.message || 'Capítulo excluído com sucesso.';
+        resposta.classList.remove('error');
+        input.value = '';
+      } catch (error) {
+        resposta.textContent = `Falha ao excluir capítulo: ${error.message}`;
+        resposta.classList.add('error');
+      } finally {
+        btnExcluirCapitulo.disabled = false;
+      }
+    }
+
+    btnExcluirCapitulo.addEventListener('click', excluirCapitulo);
+
+    // Inicializa a lista de mangás ao carregar a página
+    carregarMangas();
+  </script>
+</body>
+</html>

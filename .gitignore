@@ -31,3 +31,9 @@ coverage/
 # Banco de dados local (caso tenha)
 *.sqlite
 *.db
+
+node_modules/
+.env
+.DS_Store
+public/mangas/
+data/*.json
