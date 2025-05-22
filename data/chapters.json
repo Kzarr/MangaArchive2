@@ -22,5 +22,33 @@
     "number": 2,
     "title": "Ichigo",
     "pageCount": 1
+  },
+  {
+    "id": 1,
+    "mangaId": 1,
+    "number": 3,
+    "title": "Retorno de Naruto",
+    "pageCount": 1
+  },
+  {
+    "id": 2,
+    "mangaId": 1,
+    "number": 3,
+    "title": "Retorno de Naruto",
+    "pageCount": 1
+  },
+  {
+    "id": 3,
+    "mangaId": 2,
+    "number": 3,
+    "title": "Sociedade das Almas",
+    "pageCount": 1
+  },
+  {
+    "id": 4,
+    "mangaId": 2,
+    "number": 4,
+    "title": "Sociedade",
+    "pageCount": 1
   }
 ]
