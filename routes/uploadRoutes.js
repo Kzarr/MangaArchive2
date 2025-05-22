@@ -4,11 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const { readJson, writeJson } = require('../utils/fileUtils');
 const { generateId } = require('../utils/idUtils');
-const uploadRoutes = require('./routes/uploadRoutes');
 
 const router = express.Router();
-
-app.use('/admin', uploadRoutes);
 
 // Configuração do multer para upload de arquivos
 const storage = multer.diskStorage({
@@ -57,4 +54,5 @@ router.post('/upload', upload.array('pages'), (req, res) => {
   }
 });
 
+// Exporta o `router` corretamente
 module.exports = router;
