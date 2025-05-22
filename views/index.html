@@ -4,36 +4,12 @@
   <meta charset="UTF-8">
   <title>MangaArchive</title>
   <link rel="stylesheet" href="/css/style.css">
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #222;
-      color: #fff;
-      padding: 20px;
-    }
-    .manga {
-      background: #333;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 5px;
-    }
-    .manga h2 {
-      margin: 0 0 10px 0;
-    }
-    .chapter-list a {
-      display: block;
-      padding: 5px;
-      color: #88f;
-      text-decoration: none;
-    }
-    .chapter-list a:hover {
-      text-decoration: underline;
-    }
-  </style>
 </head>
 <body>
-  <h1>MangaArchive</h1>
-  <div id="mangaList"></div>
+  <div class="container">
+    <h1>MangaArchive</h1>
+    <div id="mangaList"></div>
+  </div>
 
   <script>
     async function loadMangas() {
@@ -45,7 +21,7 @@
       const container = document.getElementById('mangaList');
       mangas.forEach(manga => {
         const div = document.createElement('div');
-        div.classList.add('manga');
+        div.classList.add('manga-card');
 
         const title = document.createElement('h2');
         title.textContent = manga.title;
