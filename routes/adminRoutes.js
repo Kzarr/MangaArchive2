@@ -6,6 +6,8 @@ const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
 const { readJson, writeJson } = require('../utils/fileUtils');
 const { generateId } = require('../utils/idUtils');
+const isAuthenticated = require('../middleware/auth');
+
 
 const router = express.Router();
 router.use(express.urlencoded({ extended: true }));

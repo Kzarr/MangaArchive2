@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Ambiente
+.env
+
+# Build
+dist/
+build/
+coverage/
+
+# Arquivos temporários
+*.tmp
+*.swp
+
+# Banco de dados local (caso tenha)
+*.sqlite
+*.db
