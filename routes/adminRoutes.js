@@ -7,16 +7,17 @@ const { generateId } = require('../utils/idUtils');
 
 const router = express.Router();
 
-// Configurações de upload
-const upload = multer({
-  dest: 'uploads/',
-  fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith('image/')) {
-      return cb(new Error('Apenas arquivos de imagem são permitidos!'));
-    }
-    cb(null, true);
+// Configuração do multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Pasta temporária de upload
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname); // Manter o nome original
   }
 });
+
+const upload = multer({ storage: storage });
 
 // Página de upload
 router.get('/upload', (req, res) => {
@@ -29,8 +30,8 @@ router.post('/upload', upload.array('pages'), (req, res) => {
     const { slug, chapter, title } = req.body;
     const files = req.files;
 
-    if (!slug || !chapter || files.length === 0) {
-      return res.status(400).send('Campos obrigatórios ausentes.');
+    if (!slug || !chapter || !title || files.length === 0) {
+      return res.status(400).send('Todos os campos são obrigatórios.');
     }
 
     const mangas = readJson('mangas.json');
@@ -49,7 +50,10 @@ router.post('/upload', upload.array('pages'), (req, res) => {
 
     const pageFilenames = [];
 
-    files.forEach((file, index) => {
+    // Ordenar os arquivos pelo nome original
+    const sortedFiles = files.sort((a, b) => a.originalname.localeCompare(b.originalname));
+
+    sortedFiles.forEach((file, index) => {
       const ext = path.extname(file.originalname);
       const newFilename = `${index + 1}${ext}`;
       const newPath = path.join(destDir, newFilename);

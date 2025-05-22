@@ -3,12 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>Leitura do Mangá</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/chapter.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    #pagesContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    #pagesContainer img {
+      max-width: 100%;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-  <h1 id="mangaTitle"></h1>
-  <h2 id="chapterTitle"></h2>
+  <h1 id="mangaTitle">Título do Mangá</h1>
+  <h2 id="chapterTitle">Capítulo</h2>
   <div id="pagesContainer"></div>
 
   <script src="/js/chapter.js"></script>
