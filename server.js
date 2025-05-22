@@ -5,7 +5,7 @@ const session = require('express-session');
 
 const mangaRoutes = require('./routes/mangaRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const uploadRoutes = require('./routes/uploadRoutes'); // 👈 Novo
+// const uploadRoutes = require('./routes/uploadRoutes'); // 👈 Novo
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -49,7 +49,7 @@ app.get('/', (req, res) => {
 // 📚 Rotas principais
 app.use('/manga', mangaRoutes);
 app.use('/admin', adminRoutes);
-app.use(uploadRoutes); // 👈 Nova rota de upload
+app.use('/admin', uploadRoutes); // 👈 Nova rota de upload
 
 // ❌ Erros
 app.use((err, req, res, next) => {

@@ -4,58 +4,56 @@ const path = require('path');
 const fs = require('fs');
 const { readJson, writeJson } = require('../utils/fileUtils');
 const { generateId } = require('../utils/idUtils');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 const router = express.Router();
 
-// Configuração do multer para salvar os arquivos em memória temporária
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+app.use('/admin', uploadRoutes);
 
-router.use(express.urlencoded({ extended: true }));
+// Configuração do multer para upload de arquivos
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const { slug, chapter } = req.body;
+    const folderPath = path.join(__dirname, '..', 'public', slug, `cap-${chapter}`);
+    fs.mkdirSync(folderPath, { recursive: true });
+    cb(null, folderPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
 
-// ✅ Rota: processar formulário de upload
-router.post('/admin/upload', upload.array('pages'), (req, res) => {
+const upload = multer({ storage: storage });
+
+// Rota para upload de capítulos
+router.post('/upload', upload.array('pages'), (req, res) => {
+  const { slug, chapter, title } = req.body;
+  const pageCount = req.files.length;
+
   try {
-    const { slug, chapter, title } = req.body;
-    const files = req.files;
-
-    if (!slug || !chapter || !title || !files || files.length === 0) {
-      return res.status(400).send('Todos os campos são obrigatórios e pelo menos uma imagem deve ser enviada.');
-    }
-
     const mangas = readJson('mangas.json');
-    const manga = mangas.find(m => m.slug === slug);
-    if (!manga) return res.status(404).send('Mangá não encontrado.');
-
     const chapters = readJson('chapters.json');
 
-    const chapterNumber = parseInt(chapter);
-    const folderPath = path.join(__dirname, '..', 'public', slug, `cap-${chapterNumber}`);
-
-    // Criar a pasta se não existir
-    fs.mkdirSync(folderPath, { recursive: true });
-
-    // Salvar arquivos numerados (1.jpg, 2.jpg, etc.)
-    files.forEach((file, index) => {
-      const filePath = path.join(folderPath, `${index + 1}.jpg`);
-      fs.writeFileSync(filePath, file.buffer);
-    });
+    const manga = mangas.find(m => m.slug === slug);
+    if (!manga) {
+      return res.status(404).json({ error: 'Mangá não encontrado' });
+    }
 
     const newChapter = {
-      id: generateId(),
+      id: generateId(chapters),
       mangaId: manga.id,
-      number: chapterNumber,
+      number: parseInt(chapter),
       title,
-      pageCount: files.length
+      pageCount
     };
 
     chapters.push(newChapter);
     writeJson('chapters.json', chapters);
 
-    res.send('Capítulo enviado com sucesso!');
+    res.status(201).json({ message: 'Capítulo enviado com sucesso', chapter: newChapter });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Erro ao processar upload.');
+    res.status(500).json({ error: 'Erro ao processar o upload do capítulo' });
   }
 });
 
